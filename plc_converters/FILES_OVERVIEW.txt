@@ -1,0 +1,120 @@
+================================================================================
+  PLCopen XML to Structured Text Converters - Files Overview
+================================================================================
+
+📁 /home/nuwan/Documents/openplc/plc_converters/
+
+CONVERTER SCRIPTS:
+==================
+1️⃣  1_plcopenxml_converter.py    - General parser using lxml library
+                                    - Extracts variables and identifies body type
+                                    - Good for initial inspection
+
+2️⃣  2_fbd_to_st_converter.py     - Function Block Diagram converter
+                                    - Handles: AND, OR, NOT, XOR, GE, LE, GT, LT, EQ
+                                    - Best for logic gate diagrams
+
+3️⃣  3_ladder_to_st_converter.py  - Ladder Logic converter
+                                    - Handles: Contacts (NO/NC), Coils, Rungs
+                                    - Best for relay logic
+
+4️⃣  4_sfc_to_st_converter.py     - Sequential Function Chart converter
+                                    - Handles: Steps, Transitions, State machines
+                                    - Best for sequential processes
+
+HELPER SCRIPTS:
+===============
+📝  test_converters.sh            - Test all converters with one command
+                                    - Usage: ./test_converters.sh your_file.xml
+
+📝  example_conversion.sh         - Example workflow for th_X_trip.xml
+                                    - Shows complete conversion process
+
+DOCUMENTATION:
+==============
+📖  QUICKSTART.md                 - Quick start guide (READ THIS FIRST!)
+                                    - Simple step-by-step instructions
+
+📖  README.md                     - Full documentation
+                                    - Detailed usage and examples
+
+📦  requirements.txt              - Python dependencies
+                                    - Install: pip install -r requirements.txt
+
+================================================================================
+QUICK START:
+================================================================================
+
+1. INSTALL DEPENDENCIES:
+   cd /home/nuwan/Documents/openplc/plc_converters
+   pip install -r requirements.txt
+
+2. CONVERT YOUR XML FILE:
+   
+   Option A - Test all converters:
+   ./test_converters.sh your_program.xml
+   
+   Option B - Convert FBD directly:
+   python 2_fbd_to_st_converter.py your_program.xml output.st
+   
+   Option C - Convert Ladder directly:
+   python 3_ladder_to_st_converter.py your_program.xml output.st
+   
+   Option D - Convert SFC directly:
+   python 4_sfc_to_st_converter.py your_program.xml output.st
+
+3. VIEW OUTPUT:
+   cat output.st
+
+4. USE IN OPENPLC:
+   Upload output.st to OpenPLC and compile!
+
+================================================================================
+EXAMPLES:
+================================================================================
+
+# Identify what type your XML is:
+python 1_plcopenxml_converter.py mystery_program.xml
+
+# Convert FBD (like your th_X_trip example):
+python 2_fbd_to_st_converter.py th_X_trip.xml th_X_trip.st
+
+# Convert Ladder:
+python 3_ladder_to_st_converter.py ladder_program.xml ladder_output.st
+
+# Convert SFC:
+python 4_sfc_to_st_converter.py sfc_program.xml sfc_output.st
+
+================================================================================
+SUPPORTED FEATURES:
+================================================================================
+
+FBD Converter (#2):
+  ✅ Logic: AND, OR, NOT, XOR
+  ✅ Comparisons: GE (>=), LE (<=), GT (>), LT (<), EQ (=), NE (<>)
+  ✅ Variable connections
+  ✅ Input/Output mapping
+
+Ladder Converter (#3):
+  ✅ Normally Open (NO) contacts
+  ✅ Normally Closed (NC) contacts  
+  ✅ Normal coils
+  ✅ Set/Reset coils
+  ✅ Rung structure
+
+SFC Converter (#4):
+  ✅ Steps (initial and normal)
+  ✅ Transitions with conditions
+  ✅ Actions
+  ✅ State machine generation
+
+================================================================================
+NEED HELP?
+================================================================================
+
+1. Read QUICKSTART.md first
+2. Check README.md for details
+3. Run test_converters.sh to see all outputs
+4. Review generated ST code for any manual adjustments needed
+
+================================================================================

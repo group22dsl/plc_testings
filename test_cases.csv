@@ -1,0 +1,5 @@
+Test_ID,Expected_Output (%QX0.0),Delay_ms,Description
+1,TOGGLE,1200,Verify output toggles after 1.2 seconds (first blink)
+2,TOGGLE,1200,Verify output toggles again after another 1.2 seconds
+3,TOGGLE,1200,Verify output toggles again after another 1.2 seconds
+4,TOGGLE,1200,Verify output toggles again - consistent blinking behavior

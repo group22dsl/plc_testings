@@ -1,0 +1,11 @@
+# Requirements for PLCopen XML to ST Converters
+# Install with: pip install -r requirements.txt
+
+# Core XML parsing
+lxml>=4.9.0
+
+# Optional: PLCopen XML library (experimental)
+# plcopenxml>=0.1.0
+
+# For better performance and compatibility
+setuptools>=65.0.0
