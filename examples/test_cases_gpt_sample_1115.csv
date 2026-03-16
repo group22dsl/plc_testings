@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_StartButton (%QX1.0),Input_StopButton (%QX1.1),Input_EmergencyStop (%QX1.2),Input_OverloadTrip (%QX1.3),Expected_PumpMotor (%QX0.0),Expected_Alarm (%QX0.1)
+1,100,"Initial state, all inputs are off",0,0,0,0,0,0
+2,100,"Start button pressed, no emergency or overload",0,0,0,0,0,0
+3,100,"Start button pressed, no emergency or overload - rising edge",1,0,0,0,1,0
+4,100,"Stop button pressed, pump should stop",0,1,0,0,0,0
+5,100,"Emergency stop activated, pump should stop and alarm should trigger",0,0,1,0,0,1
+6,100,"Overload trip activated, pump should stop and alarm should trigger",0,0,0,1,0,1
+7,100,"Start button pressed, emergency stop active",0,0,1,0,0,1
+8,100,"Start button pressed, overload trip active",0,0,0,1,0,1
+9,100,"Start button pressed, emergency stop and overload trip active",0,0,1,1,0,1
+10,100,"Start button pressed, pump running, then stop button pressed",0,0,0,0,0,0
+11,100,"Start button pressed, pump running, then stop button pressed - rising edge",1,0,0,0,1,0
+12,100,Stop button pressed after pump started,0,1,0,0,0,0
+13,100,Emergency stop pressed after pump started,0,0,1,0,0,1
+14,100,Overload trip pressed after pump started,0,0,0,1,0,1
+15,100,"Pump running, then emergency stop and overload trip activated",0,0,1,1,0,1
+16,100,"Pump running, then emergency stop activated",0,0,1,0,0,1
+17,100,"Pump running, then overload trip activated",0,0,0,1,0,1
+18,100,"Pump running, then stop button activated",0,1,0,0,0,0
+19,100,"Pump running, no stop, emergency or overload",0,0,0,0,1,0
+20,100,"Pump running, emergency stop and overload trip activated",0,0,1,1,0,1
+21,100,"Pump running, emergency stop activated",0,0,1,0,0,1
+22,100,"Pump running, overload trip activated",0,0,0,1,0,1
+23,100,"Pump running, stop button activated",0,1,0,0,0,0
+24,100,"Pump running, no stop, emergency or overload",0,0,0,0,1,0
+25,100,"Pump running, emergency stop and overload trip activated",0,0,1,1,0,1
+26,100,"Pump running, emergency stop activated",0,0,1,0,0,1
+27,100,"Pump running, overload trip activated",0,0,0,1,0,1
+28,100,"Pump running, stop button activated",0,1,0,0,0,0
+29,100,"Pump running, no stop, emergency or overload",0,0,0,0,1,0
+30,100,"Pump running, emergency stop and overload trip activated",0,0,1,1,0,1
+31,100,"Pump running, emergency stop activated",0,0,1,0,0,1
+32,100,"Pump running, overload trip activated",0,0,0,1,0,1

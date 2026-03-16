@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_StartButton (%IX0.0),Input_StopButton (%IX0.1),Input_EmergencyStop (%IX0.2),Input_OverloadTrip (%IX0.3),Expected_PumpMotor (%QX0.0),Expected_Alarm (%QX0.1)
+1,100,"All inputs off, no operation",0,0,0,0,0,0
+2,100,"Start button pressed, pump should start",1,0,0,0,1,0
+3,100,"Stop button pressed, pump should stop",0,1,0,0,0,0
+4,100,"Emergency stop activated, pump should stop and alarm should trigger",0,0,1,0,0,1
+5,100,"Overload trip activated, pump should stop and alarm should trigger",0,0,0,1,0,1
+6,100,"Start button pressed with emergency stop active, pump should not start",1,0,1,0,0,1
+7,100,"Start button pressed with overload trip active, pump should not start",1,0,0,1,0,1
+8,100,"Start button pressed, then stop button pressed, pump should stop",1,1,0,0,0,0
+9,100,"Start button pressed, then emergency stop activated, pump should stop",1,0,1,0,0,1
+10,100,"Start button pressed, then overload trip activated, pump should stop",1,0,0,1,0,1
+11,100,"Start button pressed, then both emergency stop and overload trip activated, pump should stop",1,0,1,1,0,1
+12,100,"Pump running, then stop button pressed, pump should stop",0,1,0,0,0,0
+13,100,"Pump running, then emergency stop activated, pump should stop",0,0,1,0,0,1
+14,100,"Pump running, then overload trip activated, pump should stop",0,0,0,1,0,1
+15,100,"Pump running, then both emergency stop and overload trip activated, pump should stop",0,0,1,1,0,1
+16,100,"Pump running, then start button pressed again, no change",1,0,0,0,1,0
+17,100,"Pump running, then start button and stop button pressed, pump should stop",1,1,0,0,0,0
+18,100,"Pump running, then start button and emergency stop activated, pump should stop",1,0,1,0,0,1
+19,100,"Pump running, then start button and overload trip activated, pump should stop",1,0,0,1,0,1
+20,100,"Pump running, then start button, emergency stop and overload trip activated, pump should stop",1,0,1,1,0,1
+21,100,"Pump running, then stop button and emergency stop activated, pump should stop",0,1,1,0,0,1
+22,100,"Pump running, then stop button and overload trip activated, pump should stop",0,1,0,1,0,1
+23,100,"Pump running, then stop button, emergency stop and overload trip activated, pump should stop",0,1,1,1,0,1
+24,100,"Pump running, then all inputs activated, pump should stop",1,1,1,1,0,1
+25,100,"Pump running, then all inputs deactivated, pump should continue running",0,0,0,0,1,0
+26,100,"Pump not running, all inputs activated, pump should not start",1,1,1,1,0,1
+27,100,"Pump not running, start button and stop button activated, pump should not start",1,1,0,0,0,0
+28,100,"Pump not running, start button and emergency stop activated, pump should not start",1,0,1,0,0,1
+29,100,"Pump not running, start button and overload trip activated, pump should not start",1,0,0,1,0,1
+30,100,"Pump not running, stop button and emergency stop activated, pump should not start",0,1,1,0,0,1
+31,100,"Pump not running, stop button and overload trip activated, pump should not start",0,1,0,1,0,1
+32,100,"Pump not running, emergency stop and overload trip activated, pump should not start",0,0,1,1,0,1

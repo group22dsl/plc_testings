@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_StartButton (%QX1.0),Input_StopButton (%QX1.1),Input_EmergencyStop (%QX1.2),Input_OverloadTrip (%QX1.3),Expected_PumpMotor (%QX0.0),Expected_Alarm (%QX0.1)
+1,100,"Initial state, all inputs are 0",0,0,0,0,0,0
+2,100,"StartButton rising edge, no errors",0,0,0,0,0,0
+3,100,"StartButton rising edge, no errors",1,0,0,0,1,0
+4,100,"StopButton pressed, stop pump",0,1,0,0,0,0
+5,100,"EmergencyStop pressed, stop pump and trigger alarm",0,0,1,0,0,1
+6,100,"OverloadTrip active, stop pump and trigger alarm",0,0,0,1,0,1
+7,100,StartButton rising edge with EmergencyStop active,0,0,1,0,0,1
+8,100,StartButton rising edge with EmergencyStop active,1,0,1,0,0,1
+9,100,StartButton rising edge with OverloadTrip active,0,0,0,1,0,1
+10,100,StartButton rising edge with OverloadTrip active,1,0,0,1,0,1
+11,100,"StartButton rising edge, then StopButton pressed",0,0,0,0,0,0
+12,100,"StartButton rising edge, then StopButton pressed",1,0,0,0,1,0
+13,100,"StartButton rising edge, then StopButton pressed",0,1,0,0,0,0
+14,100,"StartButton rising edge, then EmergencyStop pressed",0,0,0,0,0,0
+15,100,"StartButton rising edge, then EmergencyStop pressed",1,0,0,0,1,0
+16,100,"StartButton rising edge, then EmergencyStop pressed",0,0,1,0,0,1
+17,100,"StartButton rising edge, then OverloadTrip active",0,0,0,0,0,0
+18,100,"StartButton rising edge, then OverloadTrip active",1,0,0,0,1,0
+19,100,"StartButton rising edge, then OverloadTrip active",0,0,0,1,0,1
+20,100,"All inputs active, check alarm and pump stop",1,1,1,1,0,1
+21,100,"StartButton rising edge, then all errors active",0,0,0,0,0,0
+22,100,"StartButton rising edge, then all errors active",1,0,0,0,1,0
+23,100,"StartButton rising edge, then all errors active",0,1,1,1,0,1
+24,100,"StartButton rising edge, then EmergencyStop and OverloadTrip active",0,0,0,0,0,0
+25,100,"StartButton rising edge, then EmergencyStop and OverloadTrip active",1,0,0,0,1,0
+26,100,"StartButton rising edge, then EmergencyStop and OverloadTrip active",0,0,1,1,0,1
+27,100,"StartButton rising edge, then EmergencyStop active, OverloadTrip inactive",0,0,0,0,0,0
+28,100,"StartButton rising edge, then EmergencyStop active, OverloadTrip inactive",1,0,0,0,1,0
+29,100,"StartButton rising edge, then EmergencyStop active, OverloadTrip inactive",0,0,1,0,0,1
+30,100,"StartButton rising edge, then OverloadTrip active, EmergencyStop inactive",0,0,0,0,0,0
+31,100,"StartButton rising edge, then OverloadTrip active, EmergencyStop inactive",1,0,0,0,1,0
+32,100,"StartButton rising edge, then OverloadTrip active, EmergencyStop inactive",0,0,0,1,0,1

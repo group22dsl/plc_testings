@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_f_X (%QW1),Input_f_Module_Error (%QX1.0),Input_f_Channel_Error (%QX1.1),Input_tx_X_Logic_Trip (%QX1.2),Expected_tx_X_trip (%QX0.0)
+1,100,"f_X at minimum boundary, no errors",-55,0,0,0,0
+2,100,"f_X at maximum boundary, no errors",125,0,0,0,0
+3,100,"f_X one below minimum boundary, no errors",-56,0,0,0,1
+4,100,"f_X one above maximum boundary, no errors",126,0,0,0,1
+5,100,"f_X at minimum boundary, Module Error",-55,1,0,0,1
+6,100,"f_X at maximum boundary, Module Error",125,1,0,0,1
+7,100,"f_X at minimum boundary, Channel Error",-55,0,1,0,1
+8,100,"f_X at maximum boundary, Channel Error",125,0,1,0,1
+9,100,"f_X at minimum boundary, Logic Trip",-55,0,0,1,1
+10,100,"f_X at maximum boundary, Logic Trip",125,0,0,1,1
+11,100,"f_X one below minimum, Module Error",-56,1,0,0,1
+12,100,"f_X one above maximum, Module Error",126,1,0,0,1
+13,100,"f_X one below minimum, Channel Error",-56,0,1,0,1
+14,100,"f_X one above maximum, Channel Error",126,0,1,0,1
+15,100,"f_X one below minimum, Logic Trip",-56,0,0,1,1
+16,100,"f_X one above maximum, Logic Trip",126,0,0,1,1
+17,100,"f_X at minimum, all errors",-55,1,1,1,1
+18,100,"f_X at maximum, all errors",125,1,1,1,1
+19,100,"f_X one below minimum, all errors",-56,1,1,1,1
+20,100,"f_X one above maximum, all errors",126,1,1,1,1
+21,100,"f_X at minimum, Module and Channel Error",-55,1,1,0,1
+22,100,"f_X at maximum, Module and Channel Error",125,1,1,0,1
+23,100,"f_X one below minimum, Module and Channel Error",-56,1,1,0,1
+24,100,"f_X one above maximum, Module and Channel Error",126,1,1,0,1
+25,100,"f_X at minimum, Module and Logic Trip",-55,1,0,1,1
+26,100,"f_X at maximum, Module and Logic Trip",125,1,0,1,1
+27,100,"f_X one below minimum, Module and Logic Trip",-56,1,0,1,1
+28,100,"f_X one above maximum, Module and Logic Trip",126,1,0,1,1
+29,100,"f_X at minimum, Channel and Logic Trip",-55,0,1,1,1
+30,100,"f_X at maximum, Channel and Logic Trip",125,0,1,1,1
+31,100,"f_X one below minimum, Channel and Logic Trip",-56,0,1,1,1
+32,100,"f_X one above maximum, Channel and Logic Trip",126,0,1,1,1

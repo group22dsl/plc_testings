@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_f_X (%QW1),Input_f_Module_Error (%QX1.0),Input_f_Channel_Error (%QX1.1),Input_tx_X_Logic_Trip (%QX1.2),Expected_tx_X_trip (%QX0.0)
+1,100,Boundary min (-55): no errors,-55,0,0,0,0
+2,100,Boundary max (125): no errors,125,0,0,0,0
+3,100,One-below-min (-56): no errors,-56,0,0,0,1
+4,100,One-above-max (126): no errors,126,0,0,0,1
+5,100,In-range (0): no errors,0,0,0,0,0
+6,100,In-range (50): no errors,50,0,0,0,0
+7,100,Boundary min (-55): module error active,-55,1,0,0,1
+8,100,Boundary max (125): module error active,125,1,0,0,1
+9,100,Boundary min (-55): channel error active,-55,0,1,0,1
+10,100,Boundary max (125): channel error active,125,0,1,0,1
+11,100,Boundary min (-55): logic trip active,-55,0,0,1,1
+12,100,Boundary max (125): logic trip active,125,0,0,1,1
+13,100,One-below-min (-56): module error active,-56,1,0,0,1
+14,100,One-above-max (126): module error active,126,1,0,0,1
+15,100,One-below-min (-56): channel error active,-56,0,1,0,1
+16,100,One-above-max (126): channel error active,126,0,1,0,1
+17,100,One-below-min (-56): logic trip active,-56,0,0,1,1
+18,100,One-above-max (126): logic trip active,126,0,0,1,1
+19,100,In-range (0): module error active,0,1,0,0,1
+20,100,In-range (50): module error active,50,1,0,0,1
+21,100,In-range (0): channel error active,0,0,1,0,1
+22,100,In-range (50): channel error active,50,0,1,0,1
+23,100,In-range (0): logic trip active,0,0,0,1,1
+24,100,In-range (50): logic trip active,50,0,0,1,1
+25,100,Boundary min (-55): all errors active,-55,1,1,1,1
+26,100,Boundary max (125): all errors active,125,1,1,1,1
+27,100,One-below-min (-56): all errors active,-56,1,1,1,1
+28,100,One-above-max (126): all errors active,126,1,1,1,1
+29,100,In-range (0): all errors active,0,1,1,1,1
+30,100,In-range (50): all errors active,50,1,1,1,1
+31,100,Boundary min (-55): module and channel errors active,-55,1,1,0,1
+32,100,Boundary max (125): module and channel errors active,125,1,1,0,1

@@ -1,0 +1,6 @@
+Test_ID,Delay_ms,Description,Expected_Output (%QX0.0)
+1,50,Test before timer expires (50ms < 100ms),NO_CHANGE
+2,120,Test after first timer cycle (100ms elapsed),TOGGLE
+3,80,Test partial second cycle (80ms),NO_CHANGE
+4,120,Test second complete cycle,TOGGLE
+5,120,Test third complete cycle,TOGGLE

@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_f_X (%QW1),Input_f_Module_Error (%QX1.0),Input_f_Channel_Error (%QX1.1),Input_tx_X_Logic_Trip (%QX1.2),Expected_tx_X_trip (%QX0.0)
+1,100,"Boundary test: f_X at minimum, no errors",-55,0,0,0,0
+2,100,"Boundary test: f_X at maximum, no errors",125,0,0,0,0
+3,100,"Boundary test: f_X one below minimum, no errors",-56,0,0,0,1
+4,100,"Boundary test: f_X one above maximum, no errors",126,0,0,0,1
+5,100,"Normal operation: f_X in range, no errors",0,0,0,0,0
+6,100,"Normal operation: f_X in range, module error",0,1,0,0,1
+7,100,"Normal operation: f_X in range, channel error",0,0,1,0,1
+8,100,"Normal operation: f_X in range, logic trip",0,0,0,1,1
+9,100,"Normal operation: f_X in range, all errors",0,1,1,1,1
+10,100,"Out of range: f_X below minimum, no errors",-56,0,0,0,1
+11,100,"Out of range: f_X above maximum, no errors",126,0,0,0,1
+12,100,"Out of range: f_X below minimum, module error",-56,1,0,0,1
+13,100,"Out of range: f_X above maximum, module error",126,1,0,0,1
+14,100,"Out of range: f_X below minimum, channel error",-56,0,1,0,1
+15,100,"Out of range: f_X above maximum, channel error",126,0,1,0,1
+16,100,"Out of range: f_X below minimum, logic trip",-56,0,0,1,1
+17,100,"Out of range: f_X above maximum, logic trip",126,0,0,1,1
+18,100,"Out of range: f_X below minimum, all errors",-56,1,1,1,1
+19,100,"Out of range: f_X above maximum, all errors",126,1,1,1,1
+20,100,"Boundary test: f_X at minimum, module error",-55,1,0,0,1
+21,100,"Boundary test: f_X at maximum, module error",125,1,0,0,1
+22,100,"Boundary test: f_X at minimum, channel error",-55,0,1,0,1
+23,100,"Boundary test: f_X at maximum, channel error",125,0,1,0,1
+24,100,"Boundary test: f_X at minimum, logic trip",-55,0,0,1,1
+25,100,"Boundary test: f_X at maximum, logic trip",125,0,0,1,1
+26,100,"Boundary test: f_X at minimum, all errors",-55,1,1,1,1
+27,100,"Boundary test: f_X at maximum, all errors",125,1,1,1,1
+28,100,"Normal operation: f_X in range, module and channel error",0,1,1,0,1
+29,100,"Normal operation: f_X in range, module and logic trip",0,1,0,1,1
+30,100,"Normal operation: f_X in range, channel and logic trip",0,0,1,1,1
+31,100,"Out of range: f_X below minimum, module and channel error",-56,1,1,0,1
+32,100,"Out of range: f_X above maximum, module and logic trip",126,1,0,1,1

@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_StartButton (%QX1.0),Input_StopButton (%QX1.1),Input_EmergencyStop (%QX1.2),Input_OverloadTrip (%QX1.3),Expected_PumpMotor (%QX0.0),Expected_Alarm (%QX0.1)
+1,100,"Initial state, all inputs off",0,0,0,0,0,0
+2,100,"Start button pressed, rising edge",1,0,0,0,1,0
+3,100,"Stop button pressed, pump should stop",0,1,0,0,0,0
+4,100,"Emergency stop activated, pump should stop and alarm should trigger",0,0,1,0,0,1
+5,100,"Overload trip activated, pump should stop and alarm should trigger",0,0,0,1,0,1
+6,100,"Start button rising edge with emergency stop active, pump should not start",1,0,1,0,0,1
+7,100,"Start button rising edge with overload trip active, pump should not start",1,0,0,1,0,1
+8,100,"Start button rising edge, then stop button pressed",0,1,0,0,0,0
+9,100,"Start button rising edge, then emergency stop pressed",0,0,1,0,0,1
+10,100,"Start button rising edge, then overload trip pressed",0,0,0,1,0,1
+11,100,"Start button rising edge, then stop button and emergency stop pressed",0,1,1,0,0,1
+12,100,"Start button rising edge, then stop button and overload trip pressed",0,1,0,1,0,1
+13,100,"Start button rising edge, then emergency stop and overload trip pressed",0,0,1,1,0,1
+14,100,"Start button rising edge, then all inputs pressed",0,1,1,1,0,1
+15,100,"Start button rising edge, then reset all inputs",0,0,0,0,1,0
+16,100,"Start button rising edge, then stop button and reset",0,1,0,0,0,0
+17,100,"Start button rising edge, then emergency stop and reset",0,0,1,0,0,1
+18,100,"Start button rising edge, then overload trip and reset",0,0,0,1,0,1
+19,100,"Start button rising edge, then stop button, emergency stop, and reset",0,1,1,0,0,1
+20,100,"Start button rising edge, then stop button, overload trip, and reset",0,1,0,1,0,1
+21,100,"Start button rising edge, then emergency stop, overload trip, and reset",0,0,1,1,0,1
+22,100,"Start button rising edge, then all inputs and reset",0,1,1,1,0,1
+23,100,"Start button rising edge, then reset all inputs, then start again",1,0,0,0,1,0
+24,100,"Start button rising edge, then reset all inputs, then stop",0,1,0,0,0,0
+25,100,"Start button rising edge, then reset all inputs, then emergency stop",0,0,1,0,0,1
+26,100,"Start button rising edge, then reset all inputs, then overload trip",0,0,0,1,0,1
+27,100,"Start button rising edge, then reset all inputs, then stop and emergency stop",0,1,1,0,0,1
+28,100,"Start button rising edge, then reset all inputs, then stop and overload trip",0,1,0,1,0,1
+29,100,"Start button rising edge, then reset all inputs, then emergency stop and overload trip",0,0,1,1,0,1
+30,100,"Start button rising edge, then reset all inputs, then all inputs",0,1,1,1,0,1
+31,100,"Start button rising edge, then reset all inputs, then start again and stop",0,1,0,0,0,0
+32,100,"Start button rising edge, then reset all inputs, then start again and emergency stop",0,0,1,0,0,1

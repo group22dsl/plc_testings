@@ -1,0 +1,33 @@
+Test_ID,Delay_ms,Description,Input_iStartPB (%QX1.0),Input_iStopPB (%QX1.1),Input_iOverload (%QX1.2),Expected_qMotorRun (%QX0.0),Expected_qMotorFault (%QX0.1)
+1,100,"Initial state, all inputs 0",0,0,0,0,0
+2,100,"Start button rising edge, no stop or overload",0,0,0,0,0
+3,100,"Start button rising edge, no stop or overload",1,0,0,0,0
+4,2100,Motor run confirmation after delay,1,0,0,1,0
+5,100,"Stop button pressed, motor should stop",0,1,0,0,0
+6,100,"Overload active, motor should stop and fault should be set",0,0,1,0,1
+7,100,Start button rising edge with overload active,0,0,1,0,1
+8,100,Start button rising edge with overload active,1,0,1,0,1
+9,100,"All inputs active, motor should not run",1,1,1,0,1
+10,100,"Start button rising edge, stop button active",0,1,0,0,0
+11,100,"Start button rising edge, stop button active",1,1,0,0,0
+12,100,"Start button rising edge, motor should run after delay",0,0,0,0,0
+13,100,"Start button rising edge, motor should run after delay",1,0,0,0,0
+14,2100,Motor run confirmation after delay with no faults,1,0,0,1,0
+15,100,"Stop button pressed after motor run, should stop",0,1,0,0,0
+16,100,"Overload active after motor run, should stop and fault",0,0,1,0,1
+17,100,"Start button rising edge, stop and overload active",0,1,1,0,1
+18,100,"Start button rising edge, stop and overload active",1,1,1,0,1
+19,100,"Start button rising edge, stop active, no overload",0,1,0,0,0
+20,100,"Start button rising edge, stop active, no overload",1,1,0,0,0
+21,100,"Start button rising edge, no stop, overload active",0,0,1,0,1
+22,100,"Start button rising edge, no stop, overload active",1,0,1,0,1
+23,100,"Start button rising edge, stop and overload inactive",0,0,0,0,0
+24,100,"Start button rising edge, stop and overload inactive",1,0,0,0,0
+25,2100,"Motor run confirmation after delay, no faults",1,0,0,1,0
+26,100,"Stop button pressed, motor should stop",0,1,0,0,0
+27,100,"Overload active, motor should stop and fault should be set",0,0,1,0,1
+28,100,"Start button rising edge, stop and overload active",0,1,1,0,1
+29,100,"Start button rising edge, stop and overload active",1,1,1,0,1
+30,100,"Start button rising edge, stop active, no overload",0,1,0,0,0
+31,100,"Start button rising edge, stop active, no overload",1,1,0,0,0
+32,100,"Start button rising edge, no stop, overload active",0,0,1,0,1

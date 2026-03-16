@@ -1,0 +1,16 @@
+Test_ID,Delay_ms,Description,Input_StartButton (%IX0.0),Input_StopButton (%IX0.1),Input_EmergencyStop (%IX0.2),Input_OverloadTrip (%IX0.3),Expected_PumpMotor (%QX0.0),Expected_Alarm (%QX0.1)
+1,100,Idle state no inputs active,0,0,0,0,0,0
+2,100,Start button pressed pump starts,1,0,0,0,1,0
+3,100,Start released pump remains latched,0,0,0,0,1,0
+4,100,Stop button stops pump,0,1,0,0,0,0
+5,100,Start while stop pressed pump should not run,1,1,0,0,0,0
+6,100,Emergency stop active prevents start,1,0,1,0,0,1
+7,100,Emergency stop during running stops pump,0,0,1,0,0,1
+8,100,Overload trip prevents start,1,0,0,1,0,1
+9,100,Overload trip during running stops pump,0,0,0,1,0,1
+10,100,Emergency and overload both active,1,0,1,1,0,1
+11,100,Stop pressed while emergency active,0,1,1,0,0,1
+12,100,Clear emergency after stop system idle,0,0,0,0,0,0
+13,100,Restart after emergency cleared,1,0,0,0,1,0
+14,100,Restart after overload cleared,1,0,0,0,1,0
+15,100,Stop after restart,0,1,0,0,0,0

@@ -4,15 +4,12 @@
 *)
 
 PROGRAM th_X_trip
-VAR_INPUT
-    f_X : INT;
-    f_Module_Error : BOOL;
-    f_Channel_Error : BOOL;
-    tx_X_Logic_Trip : BOOL;
-END_VAR
-
-VAR_OUTPUT
-    tx_X_trip : BOOL;
+VAR
+    f_X             AT %QW1   : INT;    (* Analog input  → Modbus HR 1, writable for testing *)
+    f_Module_Error  AT %QX1.0 : BOOL;   (* Boolean input → Modbus coil 8, writable for testing *)
+    f_Channel_Error AT %QX1.1 : BOOL;   (* Boolean input → Modbus coil 9, writable for testing *)
+    tx_X_Logic_Trip AT %QX1.2 : BOOL;   (* Boolean input → Modbus coil 10, writable for testing *)
+    tx_X_trip       AT %QX0.0 : BOOL;   (* Output        → Modbus coil 0, readable *)
 END_VAR
 
 VAR CONSTANT

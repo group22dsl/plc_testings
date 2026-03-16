@@ -9,16 +9,27 @@ Reads a CSV file with PLC test cases and automatically:
 
 CSV Format Requirements:
   - Must have a 'Test_ID' column
-  - Input columns:  any column header containing %IX or %IW  (e.g., "Input_Name (%IX0.0)")
-  - Output columns: any column header containing %QX or %QW  (e.g., "Expected_Output (%QX0.0)")
+  - Input columns:  any column whose header starts with 'Input'  (e.g., "Input_Name (%QX1.0)")
+                    The address in the header tells the generator WHERE to write.
+                    Use writable Modbus addresses: %QX (coils 0-8191) or %QW (HR 0-1023).
+  - Output columns: any column whose header starts with 'Expected' (e.g., "Expected_Out (%QX0.0)")
+                    The address in the header tells the generator WHERE to read.
   - Optional 'Delay_ms' column (defaults to 100ms if absent)
   - Optional 'Description' column
 
-Supported PLC Address Types:
-  %IX<byte>.<bit>  -> Discrete Input  (Modbus coil write:  byte*8 + bit)
-  %QX<byte>.<bit>  -> Discrete Output (Modbus coil read:   byte*8 + bit)
-  %IW<index>       -> Analog Input    (Modbus holding register write: index)
-  %QW<index>       -> Analog Output   (Modbus input register read:   index)
+  NOTE — Why %QX/%QW for inputs?
+  Standard OpenPLC Modbus slave only allows WRITING to output-mapped addresses:
+    %QX coils   (Modbus FC5/FC15, addresses 0-8191)  → writable
+    %QW holding registers (Modbus FC6/FC16, addr 0-1023) → writable
+  %IX discrete inputs and %IW input registers are READ-ONLY via Modbus and
+  cannot be forced externally.  Bind logical test inputs to %QX1.x/%QW1+
+  so the test generator can drive them, and keep the real output at %QX0.0.
+
+Supported PLC Address Types (in column headers):
+  %QX<byte>.<bit>  -> Modbus coil  (write coil = byte*8+bit; read coil = same)
+  %QW<index>       -> Modbus holding register (write/read HR = index)
+  %IX<byte>.<bit>  -> Discrete Input (read-only in standard OpenPLC; avoid for inputs)
+  %IW<index>       -> Input Register (read-only in standard OpenPLC; avoid for inputs)
 """
 
 import pandas as pd
@@ -47,7 +58,7 @@ DEFAULT_CSV_FILE = 'test_cases.csv'
 DEFAULT_PLC_IP = '127.0.0.1'
 DEFAULT_PORT = 502
 DEFAULT_UNIT_ID = 1
-DEFAULT_DELAY_MS = 100  # fallback if no Delay_ms column
+DEFAULT_DELAY_MS = 100  # fallback if no Delay_ms column - Delay between writing inputs and reading outputs (in milliseconds)
 
 # =====================================================================
 # Address Parsing Helpers
@@ -77,6 +88,7 @@ def parse_plc_address(header_text):
             'modbus_addr': modbus_addr,
             'raw': m.group(0),
         }
+        #ex: { 'direction': 'I'|'Q', 'type': 'X'|'W', 'modbus_addr': int, 'raw': str }
 
     # Try word address
     m = RE_WORD_ADDR.search(header_text)
@@ -173,11 +185,16 @@ def write_to_plc(client, addr_info, value, unit_id):
         # %QX outputs: coils 0-8191
         # %IX inputs: coils 8192+ (offset by 8192)
         if addr_info['direction'] == 'I':
-            # Write to coil with offset for inputs
-            client.write_coil(address=8192 + modbus_addr, value=bool_val, **kw)
+            actual_addr = 8192 + modbus_addr
         else:
-            # Write to coil for outputs (testing purposes)
-            client.write_coil(address=modbus_addr, value=bool_val, **kw)
+            actual_addr = modbus_addr
+        result = client.write_coil(address=actual_addr, value=bool_val, **kw)
+        if result is None or (hasattr(result, 'isError') and result.isError()):
+            raise IOError(
+                f"Modbus write FAILED for {addr_info['raw']} at coil {actual_addr}: {result}\n"
+                f"  Hint: ensure the ST program declares '{addr_info['raw']}' with an AT location binding\n"
+                f"  and that Modbus slave is enabled in OpenPLC with writable input addresses."
+            )
     elif addr_info['type'] == 'W':
         # Analog (holding register)
         int_val = int(value)
@@ -188,11 +205,16 @@ def write_to_plc(client, addr_info, value, unit_id):
         # %QW outputs: holding registers 0-1023
         # %IW inputs:  holding registers 1024+ (offset by 1024)
         if addr_info['direction'] == 'I':
-            # Write to holding register with offset for analog inputs
-            client.write_register(address=1024 + modbus_addr, value=int_val, **kw)
+            actual_addr = 1024 + modbus_addr
         else:
-            # For %QW outputs
-            client.write_register(address=modbus_addr, value=int_val, **kw)
+            actual_addr = modbus_addr
+        result = client.write_register(address=actual_addr, value=int_val, **kw)
+        if result is None or (hasattr(result, 'isError') and result.isError()):
+            raise IOError(
+                f"Modbus write FAILED for {addr_info['raw']} at register {actual_addr}: {result}\n"
+                f"  Hint: ensure the ST program declares '{addr_info['raw']}' with an AT location binding\n"
+                f"  and that Modbus slave is enabled in OpenPLC with writable input addresses."
+            )
 
 
 def read_from_plc(client, addr_info, unit_id):
@@ -225,9 +247,12 @@ def read_from_plc(client, addr_info, unit_id):
 def classify_columns(columns):
     """
     Scan CSV column headers and classify them as:
-      - input columns  (contain %I addresses)
-      - output columns (contain %Q addresses)
+      - input columns  (column name starts with 'Input' OR contains %I addresses)
+      - output columns (column name starts with 'Expected' OR contains %Q addresses
+                        without an 'Input' prefix)
       - meta columns   (Test_ID, Delay_ms, Description, etc.)
+    The column-name prefix takes priority over the address direction so that
+    logical inputs can be bound to writable %QX/%QW Modbus addresses for testing.
     Returns (input_cols, output_cols, has_delay, has_description)
     Each col entry: { 'col_name': str, 'addr': parsed_addr_dict }
     """
@@ -254,7 +279,15 @@ def classify_columns(columns):
 
         entry = {'col_name': col, 'addr': addr}
 
-        if addr['direction'] == 'I':
+        # Column-name prefix takes priority over address direction:
+        #   "Input_*"    → write to PLC (regardless of %I or %Q in address)
+        #   "Expected_*" → read from PLC (regardless of %I or %Q in address)
+        # Fallback: classify by address direction for unlabelled columns.
+        if col_lower.startswith('input'):
+            input_cols.append(entry)
+        elif col_lower.startswith('expected'):
+            output_cols.append(entry)
+        elif addr['direction'] == 'I':
             input_cols.append(entry)
         elif addr['direction'] == 'Q':
             output_cols.append(entry)
