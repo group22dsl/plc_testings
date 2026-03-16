@@ -787,7 +787,7 @@ def main() -> None:
 
     # ── OpenAI API key ───────────────────────────────────────────────────────
     #api_key = os.environ.get('OPENAI_API_KEY', '').strip()
-    api_key = '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'
+    api_key = 'OPENAI API KEY'S
     if not api_key:
         print("Error: OPENAI_API_KEY environment variable is not set.")
         print("  Set it with:  export OPENAI_API_KEY='sk-...'")
