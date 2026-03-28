@@ -621,7 +621,7 @@ def main():
     st_path = Path(args.st_file)
     if not st_path.exists(): print(f"Error: ST file not found: {st_path}"); sys.exit(1)
 
-    api_key = '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'
+    api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
         print("Error: OPENAI_API_KEY not set.\n  export OPENAI_API_KEY='sk-...'"); sys.exit(1)
 
