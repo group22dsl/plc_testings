@@ -202,10 +202,12 @@ def write_to_plc(client, addr_info, value, unit_id):
         if int_val < 0:
             int_val = int_val & 0xFFFF
         # OpenPLC Modbus mapping for holding registers:
-        # %QW outputs: holding registers 0-1023
-        # %IW inputs:  holding registers 1024+ (offset by 1024)
+        # %QW outputs : holding registers 0-1023  (address = index)
+        # %QW inputs  : holding registers 200-999 (address = index, same space)
+        # Legacy %IW  : NOT writable via standard Modbus — avoid in new programs.
+        #               If encountered, attempt offset 1024 (may not work).
         if addr_info['direction'] == 'I':
-            actual_addr = 1024 + modbus_addr
+            actual_addr = 1024 + modbus_addr  # legacy fallback, unreliable
         else:
             actual_addr = modbus_addr
         result = client.write_register(address=actual_addr, value=int_val, **kw)
@@ -228,7 +230,12 @@ def read_from_plc(client, addr_info, unit_id):
             raise IOError(f"Modbus read error at coil {modbus_addr}: {result}")
         return 1 if result.bits[0] else 0
     elif addr_info['type'] == 'W':
-        result = client.read_input_registers(address=modbus_addr, count=1, **kw)
+        # %QW holding registers → FC3 read_holding_registers
+        # %IW input registers   → FC4 read_input_registers
+        if addr_info['direction'] == 'Q':
+            result = client.read_holding_registers(address=modbus_addr, count=1, **kw)
+        else:
+            result = client.read_input_registers(address=modbus_addr, count=1, **kw)
         if result.isError():
             raise IOError(f"Modbus read error at register {modbus_addr}: {result}")
         val = result.registers[0]
