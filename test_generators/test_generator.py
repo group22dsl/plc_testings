@@ -306,8 +306,14 @@ def classify_columns(columns):
 # Main Test Runner
 # =====================================================================
 
-def run_automated_tests(csv_file, plc_ip, port, unit_id):
-    """Load CSV, parse columns, run each test row, and report results."""
+def run_automated_tests(csv_file, plc_ip, port, unit_id, log_csv=None):
+    """Load CSV, parse columns, run each test row, and report results.
+
+    If log_csv is given, a detailed per-test log (status, per-output
+    actual/expected values, and round-trip execution duration in ms) is
+    written there for later Logic Accuracy / Execution Performance analysis
+    (see thesis sections 9.4 and 9.7).
+    """
 
     # ---- Load CSV ----
     if not os.path.isfile(csv_file):
@@ -367,6 +373,7 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
     print("=" * 70)
 
     results = []  # collect (test_id, description, status, details)
+    log_rows = []  # detailed per-test log rows (for --log-csv)
     previous_outputs = {}  # Track previous output values for TOGGLE keyword
 
     for idx, row in df.iterrows():
@@ -381,6 +388,7 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
         delay_sec = delay_ms / 1000.0
 
         print(f"\n--- Test {test_id}: {description} ---")
+        test_start = time.perf_counter()
 
         # === WRITE INPUTS ===
         for ic in input_cols:
@@ -403,6 +411,7 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
         # === READ & VERIFY OUTPUTS ===
         all_pass = True
         details = []
+        output_log = []  # per-output {name, addr, expected, actual, match}
 
         for oc in output_cols:
             cell = str(row[oc['col_name']]).strip().upper()
@@ -451,6 +460,8 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
                     else:
                         details.append(f"  ❌ {addr['raw']}: Expected={int(expected_val)}, Actual={actual_val}  FAIL")
                         all_pass = False
+                    output_log.append({'addr': addr['raw'], 'expected': int(expected_val),
+                                        'actual': actual_val, 'match': match})
                 
                 # Store current value for next TOGGLE/NO_CHANGE comparison
                 previous_outputs[addr_key] = actual_val
@@ -458,12 +469,19 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
             except Exception as e:
                 details.append(f"  ⚠️  {addr['raw']}: Read error — {e}")
                 all_pass = False
+                output_log.append({'addr': addr['raw'], 'expected': '', 'actual': 'ERROR', 'match': False})
 
         for d in details:
             print(d)
 
         status = "PASS" if all_pass else "FAIL"
+        duration_ms = (time.perf_counter() - test_start) * 1000.0
         results.append((test_id, description, status, details))
+        log_rows.append({
+            'test_id': test_id, 'description': description, 'status': status,
+            'duration_ms': round(duration_ms, 2), 'delay_ms': delay_ms,
+            'outputs': output_log,
+        })
 
     # ---- Summary ----
     client.close()
@@ -486,7 +504,30 @@ def run_automated_tests(csv_file, plc_ip, port, unit_id):
     print("=" * 70)
     print("--- Test Suite Complete ---\n")
 
+    if log_csv:
+        _write_log_csv(log_csv, log_rows)
+        print(f"📝 Detailed results log saved: {log_csv}")
+
     return fail_count == 0
+
+
+def _write_log_csv(path, log_rows):
+    """Write a flat per-test-per-output CSV: one row per (test, output) pair,
+    with PASS/FAIL status and round-trip duration — the raw data source for
+    Logic Accuracy (9.4) and Execution Performance (9.7) analysis."""
+    import csv as _csv
+    with open(path, 'w', newline='', encoding='utf-8') as f:
+        w = _csv.writer(f)
+        w.writerow(['Test_ID', 'Description', 'Status', 'Duration_ms', 'Delay_ms',
+                    'Output_Addr', 'Expected', 'Actual', 'Output_Match'])
+        for row in log_rows:
+            if not row['outputs']:
+                w.writerow([row['test_id'], row['description'], row['status'],
+                            row['duration_ms'], row['delay_ms'], '', '', '', ''])
+            for out in row['outputs']:
+                w.writerow([row['test_id'], row['description'], row['status'],
+                            row['duration_ms'], row['delay_ms'],
+                            out['addr'], out['expected'], out['actual'], out['match']])
 
 
 # =====================================================================
@@ -513,6 +554,10 @@ Examples:
                         help=f"Modbus TCP port (default: {DEFAULT_PORT})")
     parser.add_argument('--unit', type=int, default=DEFAULT_UNIT_ID,
                         help=f"Modbus slave/unit ID (default: {DEFAULT_UNIT_ID})")
+    parser.add_argument('--log-csv', default=None,
+                        help="Save a detailed per-test/per-output results log to this CSV "
+                             "(status, actual/expected values, round-trip duration_ms) — "
+                             "used to compute Logic Accuracy and Execution Performance metrics")
 
     args = parser.parse_args()
 
@@ -521,6 +566,7 @@ Examples:
         plc_ip=args.ip,
         port=args.port,
         unit_id=args.unit,
+        log_csv=args.log_csv,
     )
 
     sys.exit(0 if success else 1)
